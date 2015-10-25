@@ -7,12 +7,33 @@ import ebu.towson.cis.cosc455.mfernandez.project1.interfaces.SyntaxAnalyzer;
  */
 public class mySyntaxAnalyzer implements SyntaxAnalyzer {
 
+    private boolean errorFound;
+
+    public mySyntaxAnalyzer(){
+        errorFound = false;
+        try {
+            markdown();
+        } catch (CompilerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String stripString(String toStrip){
+        return toStrip.trim().toLowerCase();
+    }
+
     /**
      * This method implements the BNF grammar rule for the document annotation.
      * @throws CompilerException
      */
     public void markdown() throws CompilerException{
-
+        if(stripString(CompilerManager.currentToken).equals(stripString(Tokens.docBegin))){
+            CompilerManager.lexicalAnalyzer.getNextToken();
+            if(!errorFound){}
+        }
+        else{
+            errorFound = true;
+        }
      }
 
     /**
