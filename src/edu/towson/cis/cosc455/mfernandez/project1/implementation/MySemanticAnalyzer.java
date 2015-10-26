@@ -3,6 +3,9 @@ package edu.towson.cis.cosc455.mfernandez.project1.implementation;
 import com.sun.xml.internal.ws.api.ha.StickyFeature;
 import ebu.towson.cis.cosc455.mfernandez.project1.interfaces.SemanticAnalyzer;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 /**
@@ -66,9 +69,15 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
     }
 
     @Override
-    public void writeToFile() {
+    public void writeToFile(String fileLocation) throws FileNotFoundException, UnsupportedEncodingException {
+        String fileName = "output.html";
+        String filePath = fileLocation.substring(0, fileLocation.lastIndexOf('/'));
+        System.out.println("Output saved to: " + filePath + fileName);
+        PrintWriter writer = new PrintWriter(filePath+fileName, "UTF-8");
         for(String s: output){
+            writer.println(s);
             System.out.println(s);
         }
+        writer.close();
     }
 }
