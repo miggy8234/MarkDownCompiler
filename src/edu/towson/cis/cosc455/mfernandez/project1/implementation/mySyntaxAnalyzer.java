@@ -2,15 +2,22 @@ package edu.towson.cis.cosc455.mfernandez.project1.implementation;
 
 import ebu.towson.cis.cosc455.mfernandez.project1.interfaces.SyntaxAnalyzer;
 
+import java.util.*;
+
+import static edu.towson.cis.cosc455.mfernandez.project1.implementation.Tokens.docBegin;
+
 /**
  * Created by MasterMiggy on 10/15/15.
  */
 public class mySyntaxAnalyzer implements SyntaxAnalyzer {
 
-    private boolean errorFound;
+    public static boolean errorFound;
+
+    private Queue<String> tokensToPrint;
 
     public mySyntaxAnalyzer(){
         errorFound = false;
+        tokensToPrint = new LinkedList<String>();
         try {
             markdown();
         } catch (CompilerException e) {
@@ -19,7 +26,28 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
     }
 
     private String stripString(String toStrip){
-        return toStrip.trim().toLowerCase();
+        return toStrip.trim().toUpperCase();
+    }
+
+    private void moveOn(){
+        this.tokensToPrint.add(CompilerManager.currentToken);
+        CompilerManager.lexicalAnalyzer.getNextToken();
+    }
+
+    public String convertStack(){
+        if (!tokensToPrint.isEmpty()){
+            String current = stripString(tokensToPrint.poll());
+            switch (current){
+                case Tokens.docBegin:
+                    return MySemanticAnalyzer.addHtmlStartTag();
+                case Tokens.docEnd:
+                    return MySemanticAnalyzer.addHtmlEndTag();
+                default:
+                    break;
+            }
+            return current;
+        }
+        return null;
     }
 
     /**
@@ -27,18 +55,20 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
      * @throws CompilerException
      */
     public void markdown() throws CompilerException{
-        if(stripString(CompilerManager.currentToken).equals(stripString(Tokens.docBegin))){
-            CompilerManager.lexicalAnalyzer.getNextToken();
+        if(stripString(CompilerManager.currentToken).equals(docBegin)){
+            moveOn();
             if(!errorFound){}
-            if (stripString(CompilerManager.currentToken).equals(stripString(Tokens.docEnd))){
-                CompilerManager.lexicalAnalyzer.getNextToken();
+            if (stripString(CompilerManager.currentToken).equals(Tokens.docEnd)){
+                moveOn();
             }
             else{
                 errorFound = true;
+                throw new CompilerException("Got " + CompilerManager.currentToken + " but expected " + Tokens.docEnd);
             }
         }
         else{
             errorFound = true;
+            throw new CompilerException("Got " + CompilerManager.currentToken + " but expected " + docBegin);
         }
      }
 

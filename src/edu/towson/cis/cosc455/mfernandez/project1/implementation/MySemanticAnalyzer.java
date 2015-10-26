@@ -1,54 +1,74 @@
 package edu.towson.cis.cosc455.mfernandez.project1.implementation;
 
+import com.sun.xml.internal.ws.api.ha.StickyFeature;
 import ebu.towson.cis.cosc455.mfernandez.project1.interfaces.SemanticAnalyzer;
+
+import java.util.ArrayList;
 
 /**
  * Created by MasterMiggy on 10/25/15.
  */
 public class MySemanticAnalyzer implements SemanticAnalyzer {
 
-    public String addHtmlTag(String Content){
-        return HtmlTags.htmlStart + Content + HtmlTags.htmlEnd;
+    private ArrayList<String> output;
+
+    public MySemanticAnalyzer(){
+        output = new ArrayList<String>();
     }
 
-    public String addHeadTag(String headContent){
+    public void addToFile(String content){
+        output.add(content);
+    }
+
+
+    public static String addHtmlStartTag(){
+        return HtmlTags.htmlStart;
+    }
+
+    public static String addHtmlEndTag(){
+        return HtmlTags.htmlEnd;
+    }
+
+    public static String addHeadTag(String headContent){
         return HtmlTags.headStart + headContent + HtmlTags.headEnd;
     }
 
-    public String addTitleTag(String titleContent){
+    public static String addTitleTag(String titleContent){
         return HtmlTags.titleStart + titleContent + HtmlTags.titleEnd;
     }
 
-    public String addParagraphTag(String paragraphContent){
+    public static String addParagraphTag(String paragraphContent){
         return HtmlTags.paragraphStart + paragraphContent + HtmlTags.paragraphEnd;
     }
 
-    public String addBoldTag(String boldContent){
+    public static String addBoldTag(String boldContent){
         return HtmlTags.boldStart + boldContent + HtmlTags.boldEnd;
     }
 
-    public String addListTag(String listContent){
+    public static String addListTag(String listContent){
         return HtmlTags.listStart + listContent + HtmlTags.listEnd;
     }
 
-    public String addLineBreak(){
+    public static String addLineBreak(){
         return HtmlTags.lineBreak;
     }
 
-    public String addLinkTextTag(String linkUrl, String linkText){
+    public static String addLinkTextTag(String linkUrl, String linkText){
         return HtmlTags.linkStart + linkUrl + HtmlTags.linkMiddle + linkText + HtmlTags.linkEnd;
     }
 
-    public String addAudioTag(String linkUrl){
+    public static String addAudioTag(String linkUrl){
         return HtmlTags.audioStart + linkUrl + HtmlTags.audioMiddle + HtmlTags.audioEnd;
     }
 
-    public String addVideoTag(String linkUrl){
+    public static String addVideoTag(String linkUrl){
         return HtmlTags.videoStart + linkUrl + HtmlTags.videoMiddle;
     }
 
     @Override
-    public void writeToFile(String item) {
-
+    public void writeToFile() {
+        for(String s: output){
+            System.out.println(s);
+        }
     }
 }

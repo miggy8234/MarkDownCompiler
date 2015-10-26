@@ -5,6 +5,6 @@ package ebu.towson.cis.cosc455.mfernandez.project1.interfaces;
  */
 public interface SemanticAnalyzer {
 
-    public void writeToFile(String item);
+    public void writeToFile();
 
 }
