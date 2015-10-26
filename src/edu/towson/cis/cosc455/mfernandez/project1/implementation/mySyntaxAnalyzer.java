@@ -30,6 +30,12 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
         if(stripString(CompilerManager.currentToken).equals(stripString(Tokens.docBegin))){
             CompilerManager.lexicalAnalyzer.getNextToken();
             if(!errorFound){}
+            if (stripString(CompilerManager.currentToken).equals(stripString(Tokens.docEnd))){
+                CompilerManager.lexicalAnalyzer.getNextToken();
+            }
+            else{
+                errorFound = true;
+            }
         }
         else{
             errorFound = true;

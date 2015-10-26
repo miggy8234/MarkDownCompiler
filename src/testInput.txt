@@ -1,17 +1,3 @@
 #BEGIN
-		^ < The Simpsons > ^
-		{
-			The Simpsons!
-			@(http://www.televisiontunes.com/themesongs/TheSimpsons.mp3) ~
 
-			The members of the [The Simpsons](https://en.wikipedia.org/wiki/The_Simpsons) are:
-				+ Homer Simpson ;
-				+ Marge Simpson ;
-+ Bart Simpson ;
-+ Lisa Simpson ;
-+ Maggie Simpson ;
-			~
-			Lets watch now: ~
-			%(http://www.youtube.com/embed/zoO0s1ukcqQ )
-		}
-	#END
+#END
