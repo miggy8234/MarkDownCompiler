@@ -36,8 +36,8 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
 
     public String convertStack(){
         if (!tokensToPrint.isEmpty()){
-            String current = stripString(tokensToPrint.poll());
-            switch (current){
+            String current = tokensToPrint.poll();
+            switch (stripString(current)){
                 case Tokens.docBegin:
                     return MySemanticAnalyzer.addHtmlStartTag();
                 case Tokens.docEnd:
@@ -57,8 +57,8 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
     public void markdown() throws CompilerException{
         if(stripString(CompilerManager.currentToken).equals(docBegin)){
             moveOn();
-            if(!errorFound){}
-            if (stripString(CompilerManager.currentToken).equals(Tokens.docEnd)){
+            if(!errorFound){innerText();}
+            if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.docEnd)){
                 moveOn();
             }
             else{
@@ -86,7 +86,21 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
 
      */
     public void title() throws CompilerException{
-
+        if(stripString(CompilerManager.currentToken).equals(Tokens.titleBegin)){
+            moveOn();
+            if(!errorFound){innerText();}
+            if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.docEnd)){
+                moveOn();
+            }
+            else{
+                errorFound = true;
+                throw new CompilerException("Got " + CompilerManager.currentToken + " but expected " + Tokens.docEnd);
+            }
+        }
+        else{
+            errorFound = true;
+            throw new CompilerException("Got " + CompilerManager.currentToken + " but expected " + docBegin);
+        }
     }
 
     /**
@@ -110,7 +124,7 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
      * @throws CompilerException
      */
     public void innerText() throws CompilerException{
-
+        moveOn();
     }
 
     /**
