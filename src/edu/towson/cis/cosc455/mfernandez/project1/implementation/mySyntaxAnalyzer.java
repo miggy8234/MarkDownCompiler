@@ -49,6 +49,9 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
             if(!errorFound){italics();}
             if(!errorFound){link();}
             if(!errorFound){audio();}
+            if(!errorFound){video();}
+            if(!errorFound){listitem();}
+            if(!errorFound){paragraph();}
             while(!errorFound && !Tokens.validTags.contains(stripString(CompilerManager.currentToken))){
                 innerText();
             }
@@ -116,7 +119,17 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
      * @throws CompilerException
      */
     public void paragraph() throws CompilerException{
-
+        if(stripString(CompilerManager.currentToken).equals(Tokens.paragraphBegin)){
+            moveOn();
+            if(!errorFound){innerText();}
+            if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.paragraphEnd)){
+                moveOn();
+            }
+            else {
+                errorFound = true;
+                throw new CompilerException("Got " + CompilerManager.currentToken + " but expected " + Tokens.paragraphEnd);
+            }
+        }
     }
 
     /**
@@ -184,7 +197,17 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
      * @throws CompilerException
      */
     public void listitem() throws CompilerException{
-
+        if(stripString(CompilerManager.currentToken).equals(Tokens.listItemBegin)){
+            moveOn();
+            if(!errorFound){innerText();}
+            if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.listItemEnd)){
+                moveOn();
+            }
+            else{
+                errorFound = true;
+                throw new CompilerException("Got " + CompilerManager.currentToken + " but expected " + Tokens.listItemEnd);
+            }
+        }
     }
 
     /**
@@ -244,7 +267,10 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
      * @throws CompilerException
      */
     public void video() throws CompilerException{
-
+        if(stripString(CompilerManager.currentToken).equals(Tokens.videoAnnotation)){
+            moveOn();
+            if(!errorFound) {url();}
+        }
     }
 
     /**

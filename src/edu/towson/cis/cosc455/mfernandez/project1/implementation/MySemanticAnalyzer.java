@@ -30,7 +30,7 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
                     output.add(HtmlTags.htmlStart + "\n");
                     break;
                 case Tokens.docEnd:
-                    output.add(HtmlTags.htmlEnd);
+                    output.add("\n" + HtmlTags.htmlEnd);
                     break;
                 case Tokens.headAnnotation:
                     if(output.contains(HtmlTags.headStart)){
@@ -63,7 +63,7 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
                     output.add(HtmlTags.titleEnd);
                     break;
                 case Tokens.lineBreakAnnotation:
-                    output.add(HtmlTags.lineBreak + "\n");
+                    output.add("\n" + HtmlTags.lineBreak + "\n");
                     break;
                 case Tokens.linkPhraseBegin:
                     output.add(HtmlTags.linkStart);
@@ -85,6 +85,26 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
                     output.add(audioUrl);
                     output.add(HtmlTags.audioMiddle);
                     output.add(HtmlTags.audioEnd + "\n");
+                    break;
+                case Tokens.videoAnnotation:
+                    output.add(HtmlTags.videoStart);
+                    current = tokensToPrint.poll();
+                    String videoUrl = tokensToPrint.poll();
+                    current = tokensToPrint.poll();
+                    output.add(videoUrl);
+                    output.add(HtmlTags.videoMiddle + "\n");
+                    break;
+                case Tokens.listItemBegin:
+                    output.add(HtmlTags.listStart);
+                    break;
+                case Tokens.listItemEnd:
+                    output.add(HtmlTags.listEnd + "\n");
+                    break;
+                case Tokens.paragraphBegin:
+                    output.add(HtmlTags.paragraphStart);
+                    break;
+                case Tokens.paragraphEnd:
+                    output.add(HtmlTags.paragraphEnd + "\n");
                     break;
                 default:
                     output.add(current);
