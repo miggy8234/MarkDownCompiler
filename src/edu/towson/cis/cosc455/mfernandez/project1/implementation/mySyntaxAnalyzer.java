@@ -45,7 +45,10 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
             moveOn();
             if(!errorFound){head();}
             if(!errorFound){bold();}
+            if(!errorFound){newline();}
             if(!errorFound){italics();}
+            if(!errorFound){link();}
+            if(!errorFound){audio();}
             while(!errorFound && !Tokens.validTags.contains(stripString(CompilerManager.currentToken))){
                 innerText();
             }
@@ -197,7 +200,32 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
      * @throws CompilerException
      */
     public void link() throws CompilerException{
+        if(stripString(CompilerManager.currentToken).equals(Tokens.linkPhraseBegin)){
+            moveOn();
+            if(!errorFound){innerText();}
+            if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.linkPhraseEnd)){
+                moveOn();
+                if(!errorFound){url();}
+            }
+            else{
+                errorFound = true;
+                throw new CompilerException("Got " + CompilerManager.currentToken + " but expected " + Tokens.linkPhraseEnd);
+            }
+        }
+    }
 
+    public void url() throws CompilerException{
+        if(stripString(CompilerManager.currentToken).equals(Tokens.urlAddressBegin)){
+            moveOn();
+            if(!errorFound){innerText();}
+            if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.urlAddressEnd)){
+                moveOn();
+            }
+            else{
+                errorFound = true;
+                throw new CompilerException("Got " + CompilerManager.currentToken + " but expected " + Tokens.urlAddressEnd);
+            }
+        }
     }
 
     /**
@@ -205,7 +233,10 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
      * @throws CompilerException
      */
     public void audio() throws CompilerException{
-
+        if(stripString(CompilerManager.currentToken).equals(Tokens.audioAnnotation)){
+            moveOn();
+            if(!errorFound) {url();}
+        }
     }
 
     /**
@@ -221,7 +252,9 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
      * @throws CompilerException
      */
     public void newline() throws CompilerException{
-
+        if(stripString(CompilerManager.currentToken).equals(Tokens.lineBreakAnnotation)){
+            moveOn();
+        }
     }
 
 }

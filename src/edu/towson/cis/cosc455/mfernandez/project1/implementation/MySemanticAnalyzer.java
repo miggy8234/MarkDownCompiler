@@ -62,6 +62,30 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
                 case Tokens.titleEnd:
                     output.add(HtmlTags.titleEnd);
                     break;
+                case Tokens.lineBreakAnnotation:
+                    output.add(HtmlTags.lineBreak);
+                    break;
+                case Tokens.linkPhraseBegin:
+                    output.add(HtmlTags.linkStart);
+                    String linkText = tokensToPrint.poll();
+                    current = tokensToPrint.poll();
+                    current = tokensToPrint.poll();
+                    String linkUrl = tokensToPrint.poll();
+                    current = tokensToPrint.poll();
+                    output.add(linkUrl);
+                    output.add(HtmlTags.linkMiddle);
+                    output.add(linkText);
+                    output.add(HtmlTags.linkEnd);
+                    break;
+                case Tokens.audioAnnotation:
+                    output.add(HtmlTags.audioStart);
+                    current = tokensToPrint.poll();
+                    String audioUrl = tokensToPrint.poll();
+                    current = tokensToPrint.poll();
+                    output.add(audioUrl);
+                    output.add(HtmlTags.audioMiddle);
+                    output.add(HtmlTags.audioEnd);
+                    break;
                 default:
                     output.add(current);
                     break;
@@ -80,7 +104,7 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
         System.out.println("Output saved to: " + filePath + fileName);
         PrintWriter writer = new PrintWriter(filePath+fileName, "UTF-8");
         for(String s: output){
-            writer.println(s);
+            writer.print(s);
             System.out.println(s);
         }
         writer.close();

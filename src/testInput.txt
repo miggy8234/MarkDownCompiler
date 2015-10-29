@@ -1,6 +1,9 @@
 #BEGIN
 ^<title>^
 **hello**
+~
 *bye*
+[link](www.google.com)
+@(http://www.televisiontunes.com/themesongs/TheSimpsons.mp3)
 sdfsdf
 #END
