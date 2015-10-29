@@ -27,14 +27,14 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
             String current = tokensToPrint.poll();
             switch (CompilerManager.syntaxAnalyzer.stripString(current)){
                 case Tokens.docBegin:
-                    output.add(HtmlTags.htmlStart);
+                    output.add(HtmlTags.htmlStart + "\n");
                     break;
                 case Tokens.docEnd:
                     output.add(HtmlTags.htmlEnd);
                     break;
                 case Tokens.headAnnotation:
                     if(output.contains(HtmlTags.headStart)){
-                        output.add(HtmlTags.headEnd);
+                        output.add(HtmlTags.headEnd + "\n");
                     }
                     else{
                         output.add(HtmlTags.headStart);
@@ -63,7 +63,7 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
                     output.add(HtmlTags.titleEnd);
                     break;
                 case Tokens.lineBreakAnnotation:
-                    output.add(HtmlTags.lineBreak);
+                    output.add(HtmlTags.lineBreak + "\n");
                     break;
                 case Tokens.linkPhraseBegin:
                     output.add(HtmlTags.linkStart);
@@ -75,7 +75,7 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
                     output.add(linkUrl);
                     output.add(HtmlTags.linkMiddle);
                     output.add(linkText);
-                    output.add(HtmlTags.linkEnd);
+                    output.add(HtmlTags.linkEnd + "\n");
                     break;
                 case Tokens.audioAnnotation:
                     output.add(HtmlTags.audioStart);
@@ -84,7 +84,7 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
                     current = tokensToPrint.poll();
                     output.add(audioUrl);
                     output.add(HtmlTags.audioMiddle);
-                    output.add(HtmlTags.audioEnd);
+                    output.add(HtmlTags.audioEnd + "\n");
                     break;
                 default:
                     output.add(current);
@@ -105,8 +105,9 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
         PrintWriter writer = new PrintWriter(filePath+fileName, "UTF-8");
         for(String s: output){
             writer.print(s);
-            System.out.println(s);
+            System.out.print(s);
         }
+        System.out.println("\n");
         writer.close();
     }
 
