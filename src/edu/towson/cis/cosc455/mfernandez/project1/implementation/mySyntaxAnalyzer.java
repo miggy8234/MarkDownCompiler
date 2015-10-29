@@ -44,6 +44,7 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
         if(stripString(CompilerManager.currentToken).equals(docBegin)){
             moveOn();
             if(!errorFound){head();}
+            if(!errorFound){bold();}
             while(!errorFound && !Tokens.validTags.contains(stripString(CompilerManager.currentToken))){
                 innerText();
             }
@@ -143,7 +144,17 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
      * @throws CompilerException
      */
     public void bold() throws CompilerException{
-
+        if(stripString(CompilerManager.currentToken).equals(Tokens.boldAnnotation)){
+            moveOn();
+            if(!errorFound){innerText();}
+            if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.boldAnnotation)){
+                moveOn();
+            }
+            else{
+                errorFound = true;
+                throw new CompilerException("Got " + CompilerManager.currentToken + " but expected " + Tokens.boldAnnotation);
+            }
+        }
     }
 
     /**
