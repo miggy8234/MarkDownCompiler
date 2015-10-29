@@ -45,6 +45,7 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
             moveOn();
             if(!errorFound){head();}
             if(!errorFound){bold();}
+            if(!errorFound){italics();}
             while(!errorFound && !Tokens.validTags.contains(stripString(CompilerManager.currentToken))){
                 innerText();
             }
@@ -162,7 +163,17 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
      * @throws CompilerException
      */
     public void italics() throws CompilerException{
-
+        if(stripString(CompilerManager.currentToken).equals(Tokens.italicAnnotation)){
+            moveOn();
+            if(!errorFound){innerText();}
+            if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.italicAnnotation)){
+                moveOn();
+            }
+            else{
+                errorFound = true;
+                throw new CompilerException("Got " + CompilerManager.currentToken + " but expected " + Tokens.italicAnnotation);
+            }
+        }
     }
 
     /**

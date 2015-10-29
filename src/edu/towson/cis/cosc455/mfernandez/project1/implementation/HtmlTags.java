@@ -20,6 +20,9 @@ public class HtmlTags {
     public static final String boldStart = "<b>";
     public static final String boldEnd = "</b>";
 
+    public static final String italicStart = "<i>";
+    public static final String italicEnd = "</i>";
+
     public static final String listStart = "<li>";
     public static final String listEnd = "</li>";
 

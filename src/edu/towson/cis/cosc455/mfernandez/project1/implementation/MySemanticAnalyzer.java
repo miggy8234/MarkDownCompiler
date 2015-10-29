@@ -40,6 +40,22 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
                         output.add(HtmlTags.headStart);
                     }
                     break;
+                case Tokens.boldAnnotation:
+                    if(output.contains(HtmlTags.boldStart)){
+                        output.add(HtmlTags.boldEnd);
+                    }
+                    else{
+                        output.add(HtmlTags.boldStart);
+                    }
+                    break;
+                case Tokens.italicAnnotation:
+                    if(output.contains(HtmlTags.italicStart)){
+                        output.add(HtmlTags.italicEnd);
+                    }
+                    else{
+                        output.add(HtmlTags.italicStart);
+                    }
+                    break;
                 case Tokens.titleBegin:
                     output.add(HtmlTags.titleStart);
                     break;
