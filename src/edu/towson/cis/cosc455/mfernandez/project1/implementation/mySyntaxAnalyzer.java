@@ -25,7 +25,7 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
         }
     }
 
-    private String stripString(String toStrip){
+    public String stripString(String toStrip){
         return toStrip.trim().toUpperCase();
     }
 
@@ -34,21 +34,7 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
         CompilerManager.lexicalAnalyzer.getNextToken();
     }
 
-    public String convertStack(){
-        if (!tokensToPrint.isEmpty()){
-            String current = tokensToPrint.poll();
-            switch (stripString(current)){
-                case Tokens.docBegin:
-                    return MySemanticAnalyzer.addHtmlStartTag();
-                case Tokens.docEnd:
-                    return MySemanticAnalyzer.addHtmlEndTag();
-                default:
-                    break;
-            }
-            return current;
-        }
-        return null;
-    }
+    public Queue<String> passParseTree(){return tokensToPrint;}
 
     /**
      * This method implements the BNF grammar rule for the document annotation.
@@ -57,7 +43,10 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
     public void markdown() throws CompilerException{
         if(stripString(CompilerManager.currentToken).equals(docBegin)){
             moveOn();
-            if(!errorFound){innerText();}
+            if(!errorFound){head();}
+            while(!errorFound && !Tokens.validTags.contains(stripString(CompilerManager.currentToken))){
+                innerText();
+            }
             if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.docEnd)){
                 moveOn();
             }
@@ -77,7 +66,17 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
      * @throws CompilerException
      */
     public void head() throws CompilerException{
-
+        if(stripString(CompilerManager.currentToken).equals(Tokens.headAnnotation)){
+            moveOn();
+            if(!errorFound){title();}
+            if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.headAnnotation)){
+                moveOn();
+            }
+            else{
+                errorFound = true;
+                throw new CompilerException("Got " + CompilerManager.currentToken + " but expected " + Tokens.headAnnotation);
+            }
+        }
     }
 
     /**
@@ -89,17 +88,13 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
         if(stripString(CompilerManager.currentToken).equals(Tokens.titleBegin)){
             moveOn();
             if(!errorFound){innerText();}
-            if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.docEnd)){
+            if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.titleEnd)){
                 moveOn();
             }
             else{
                 errorFound = true;
-                throw new CompilerException("Got " + CompilerManager.currentToken + " but expected " + Tokens.docEnd);
+                throw new CompilerException("Got " + CompilerManager.currentToken + " but expected " + Tokens.titleEnd);
             }
-        }
-        else{
-            errorFound = true;
-            throw new CompilerException("Got " + CompilerManager.currentToken + " but expected " + docBegin);
         }
     }
 
