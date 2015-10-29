@@ -1,12 +1,18 @@
 #BEGIN
+$DEF lastname = Simpson $END
 ^<title>^
+$USE lastname $END
 **hello**
 ~
 *bye*
 [link](www.google.com)
+{
+$DEF lastname = Simpson2 $END
 @(http://www.televisiontunes.com/themesongs/TheSimpsons.mp3)
 %(http://www.youtube.com/embed/zoO0s1ukcqQ)
-+iteml1;
-{paragraph}
++[iteml1](google.com);
+$USE lastname $END
+}
+{paragraph $USE lastname $END}
 sdfsdf
 #END

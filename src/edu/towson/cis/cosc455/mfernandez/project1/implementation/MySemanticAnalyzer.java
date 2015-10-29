@@ -6,8 +6,7 @@ import ebu.towson.cis.cosc455.mfernandez.project1.interfaces.SemanticAnalyzer;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * Created by MasterMiggy on 10/25/15.
@@ -16,15 +15,19 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
 
     private ArrayList<String> output;
     private Queue<String> tokensToPrint;
+    private LinkedList<HashMap<String, String>> variables;
 
     public MySemanticAnalyzer(Queue<String> tokens){
         tokensToPrint = tokens;
         output = new ArrayList<String>();
+        variables = new LinkedList<HashMap<String, String>>();
     }
 
     public void convertStack(){
+        HashMap<String, String> scopeVariables = null;
         while (!tokensToPrint.isEmpty()){
             String current = tokensToPrint.poll();
+            boolean newScope = false;
             switch (CompilerManager.syntaxAnalyzer.stripString(current)){
                 case Tokens.docBegin:
                     output.add(HtmlTags.htmlStart + "\n");
@@ -38,6 +41,7 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
                     }
                     else{
                         output.add(HtmlTags.headStart);
+                        newScope = true;
                     }
                     break;
                 case Tokens.boldAnnotation:
@@ -46,6 +50,7 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
                     }
                     else{
                         output.add(HtmlTags.boldStart);
+                        newScope = true;
                     }
                     break;
                 case Tokens.italicAnnotation:
@@ -54,10 +59,12 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
                     }
                     else{
                         output.add(HtmlTags.italicStart);
+                        newScope = true;
                     }
                     break;
                 case Tokens.titleBegin:
                     output.add(HtmlTags.titleStart);
+                    newScope = true;
                     break;
                 case Tokens.titleEnd:
                     output.add(HtmlTags.titleEnd);
@@ -75,7 +82,7 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
                     output.add(linkUrl);
                     output.add(HtmlTags.linkMiddle);
                     output.add(linkText);
-                    output.add(HtmlTags.linkEnd + "\n");
+                    output.add(HtmlTags.linkEnd);
                     break;
                 case Tokens.audioAnnotation:
                     output.add(HtmlTags.audioStart);
@@ -102,23 +109,71 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
                     break;
                 case Tokens.paragraphBegin:
                     output.add(HtmlTags.paragraphStart);
+                    newScope = true;
                     break;
                 case Tokens.paragraphEnd:
                     output.add(HtmlTags.paragraphEnd + "\n");
+                    break;
+                case Tokens.variableDefinitionBegin:
+                    String variableName = tokensToPrint.poll();
+                    current = tokensToPrint.poll();
+                    String variableValue = tokensToPrint.poll();
+                    if(scopeVariables == null){
+                        scopeVariables = new HashMap<String, String>(){{put("ScopeLocaiton", variableValue);put(variableName, variableValue);}};
+                        //variables.addLast(new HashMap<String, String>(){{put(variableName, variableValue);}});
+                    }
+                    else{
+                        scopeVariables.put(variableName, variableValue);
+                    }
+                    current = tokensToPrint.poll();
+                    break;
+                case Tokens.variableUseBegin:
+                    String variableNameToFind = tokensToPrint.poll();
+                    if(scopeVariables != null && scopeVariables.containsKey(variableNameToFind)){
+                        output.add(scopeVariables.get(variableNameToFind));
+                    }
+                    else if(containsValueForVariable(variableNameToFind)){
+                        output.add(getValueForVariable(variableNameToFind));
+                    }
+                    current = tokensToPrint.poll();
                     break;
                 default:
                     output.add(current);
                     break;
             }
+            if(newScope){
+                if(scopeVariables != null){
+                    if(variables.size() == 0){
+                        variables.addFirst(scopeVariables);
+                    }
+                    scopeVariables = null;
+                }
+            }
         }
     }
 
-    //public void addToFile(String content){
-     //   output.add(content);
-   // }
+    private String getValueForVariable(String variableName){
+        for(HashMap<String, String> map : variables){
+            if(map.containsKey(variableName)){
+                return map.get(variableName);
+            }
+        }
+        return null;
+    }
+
+    private boolean containsValueForVariable(String variableName){
+        for(HashMap<String, String> map : variables){
+            if(map.containsKey(variableName)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Override
     public void writeToFile(String fileLocation) throws FileNotFoundException, UnsupportedEncodingException {
+        boolean test = containsValueForVariable("lastname");
+        String test2 = getValueForVariable("lastname");
         String fileName = "output.html";
         String filePath = fileLocation.substring(0, fileLocation.lastIndexOf('/'));
         System.out.println("Output saved to: " + filePath + fileName);
@@ -130,50 +185,4 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
         System.out.println("\n");
         writer.close();
     }
-
-    /*
-    public static String addHtmlStartTag(){
-        return HtmlTags.htmlStart;
-    }
-
-    public static String addHtmlEndTag(){
-        return HtmlTags.htmlEnd;
-    }
-
-    public static String addHeadTag(String headContent){
-        return HtmlTags.headStart + headContent + HtmlTags.headEnd;
-    }
-
-    public static String addTitleTag(String titleContent){
-        return HtmlTags.titleStart + titleContent + HtmlTags.titleEnd;
-    }
-
-    public static String addParagraphTag(String paragraphContent){
-        return HtmlTags.paragraphStart + paragraphContent + HtmlTags.paragraphEnd;
-    }
-
-    public static String addBoldTag(String boldContent){
-        return HtmlTags.boldStart + boldContent + HtmlTags.boldEnd;
-    }
-
-    public static String addListTag(String listContent){
-        return HtmlTags.listStart + listContent + HtmlTags.listEnd;
-    }
-
-    public static String addLineBreak(){
-        return HtmlTags.lineBreak;
-    }
-
-    public static String addLinkTextTag(String linkUrl, String linkText){
-        return HtmlTags.linkStart + linkUrl + HtmlTags.linkMiddle + linkText + HtmlTags.linkEnd;
-    }
-
-    public static String addAudioTag(String linkUrl){
-        return HtmlTags.audioStart + linkUrl + HtmlTags.audioMiddle + HtmlTags.audioEnd;
-    }
-
-    public static String addVideoTag(String linkUrl){
-        return HtmlTags.videoStart + linkUrl + HtmlTags.videoMiddle;
-    }
-    */
 }

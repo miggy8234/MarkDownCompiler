@@ -62,6 +62,7 @@ public class MyLexicalAnalyzer implements LexicalAnalyzer {
 
             lineHolding = lineHolding.substring(charIndex, lineHolding.length());
             //System.out.println(lineHolding);
+            CompilerManager.currentToken = CompilerManager.currentToken.trim();
             if(!lookupToken() && !validString() && !isSpace(CompilerManager.currentToken)){
                 try {
                     throw new CompilerException("On line number " + CompilerManager.lineNumber + " : " + CompilerManager.currentToken + " is not a valid token");
@@ -88,9 +89,10 @@ public class MyLexicalAnalyzer implements LexicalAnalyzer {
      */
     public void getCharacter(){
         if(charIndex < lineHolding.length() &&
-                (!lookupToken(Character.toString(lineHolding.toCharArray()[charIndex]).trim())
+                ((!lookupToken(Character.toString(lineHolding.toCharArray()[charIndex]).trim()) && validString(Character.toString(lineHolding.toCharArray()[charIndex]).trim()))
                         || CompilerManager.currentToken.trim().length() == 0
-                        || lookupToken((CompilerManager.currentToken + Character.toString(lineHolding.toCharArray()[charIndex])).trim()))){
+                        || lookupToken((CompilerManager.currentToken + Character.toString(lineHolding.toCharArray()[charIndex])).trim())
+                )){
             nextChar = lineHolding.toCharArray()[charIndex];
         }
         else{
@@ -135,6 +137,15 @@ public class MyLexicalAnalyzer implements LexicalAnalyzer {
         return true;
     }
 
+    public boolean validString(String toTest){
+        for(Character c : toTest.toCharArray()){
+            if(!Tokens.text.contains(c.toString().toUpperCase()) || isSpace(c.toString().toUpperCase())){
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * This method checks to see if the current, possible token is legal in the
      * defined grammar.
@@ -142,7 +153,10 @@ public class MyLexicalAnalyzer implements LexicalAnalyzer {
      * @return true, if it is a legal token, otherwise false
      */
     public boolean lookupToken(){
-        switch (CompilerManager.currentToken.trim()) {
+
+        return Tokens.validTags.contains(CompilerManager.currentToken.trim());
+
+        /*switch (CompilerManager.currentToken.trim()) {
             case Tokens.docBegin:
                 return true;
             case Tokens.docEnd:
@@ -187,10 +201,12 @@ public class MyLexicalAnalyzer implements LexicalAnalyzer {
                 return true;
         }
 
-        return false;
+        return false;*/
     }
 
     public boolean lookupToken(String toTest){
+        return Tokens.validTags.contains(toTest.trim());
+        /*
         switch (toTest.trim()) {
             case Tokens.docBegin:
                 return true;
@@ -236,7 +252,7 @@ public class MyLexicalAnalyzer implements LexicalAnalyzer {
                 return true;
         }
 
-        return false;
+        return false;*/
     }
 
 }

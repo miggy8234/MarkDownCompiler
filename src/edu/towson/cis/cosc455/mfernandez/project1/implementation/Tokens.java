@@ -38,6 +38,7 @@ public class Tokens {
     public static final String videoAnnotation = "%";
 
     public static final String variableDefinitionBegin = "$DEF";
+    public static final String variableEquivalence = "=";
     public static final String variableUseBegin = "$USE";
     public static final String variableEnd = "$END";
 
@@ -61,6 +62,7 @@ public class Tokens {
         add(audioAnnotation);
         add(videoAnnotation);
         add(variableDefinitionBegin);
+        add(variableEquivalence);
         add(variableUseBegin);
         add(variableEnd);
     }};
@@ -108,7 +110,6 @@ public class Tokens {
         add("_");
         add("!");
         add("/");
-        add(" ");
         add("\t");
         add("\r");
         add("\n");

@@ -9,10 +9,9 @@ import static edu.towson.cis.cosc455.mfernandez.project1.implementation.Tokens.d
 /**
  * Created by MasterMiggy on 10/15/15.
  */
-public class mySyntaxAnalyzer implements SyntaxAnalyzer {
+public class  mySyntaxAnalyzer implements SyntaxAnalyzer {
 
     public static boolean errorFound;
-
     private Queue<String> tokensToPrint;
 
     public mySyntaxAnalyzer(){
@@ -43,18 +42,13 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
     public void markdown() throws CompilerException{
         if(stripString(CompilerManager.currentToken).equals(docBegin)){
             moveOn();
+            if(!errorFound){variableDefine();}
             if(!errorFound){head();}
-            if(!errorFound){bold();}
-            if(!errorFound){newline();}
-            if(!errorFound){italics();}
-            if(!errorFound){link();}
-            if(!errorFound){audio();}
-            if(!errorFound){video();}
-            if(!errorFound){listitem();}
-            if(!errorFound){paragraph();}
-            while(!errorFound && !Tokens.validTags.contains(stripString(CompilerManager.currentToken))){
+            if(!errorFound){body();}
+            /*while(!errorFound && !Tokens.validTags.contains(stripString(CompilerManager.currentToken))){
                 innerText();
-            }
+                if(!errorFound){paragraph();}
+            }*/
             if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.docEnd)){
                 moveOn();
             }
@@ -111,7 +105,12 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
      * @throws CompilerException
      */
     public void body() throws CompilerException{
-
+        while(!errorFound
+                && CompilerManager.currentToken != null
+                && !stripString(CompilerManager.currentToken).equals(Tokens.docEnd)){
+            innerItem();
+            if(!errorFound){paragraph();}
+        }
     }
 
     /**
@@ -121,7 +120,13 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
     public void paragraph() throws CompilerException{
         if(stripString(CompilerManager.currentToken).equals(Tokens.paragraphBegin)){
             moveOn();
-            if(!errorFound){innerText();}
+            if(!errorFound){variableDefine();}
+            while(!errorFound
+                    && CompilerManager.currentToken != null
+                    && !stripString(CompilerManager.currentToken).equals(Tokens.paragraphEnd)){
+                innerItem();
+            }
+            //if(!errorFound && !stripString(CompilerManager.currentToken).equals(Tokens.paragraphEnd)){innerText();}
             if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.paragraphEnd)){
                 moveOn();
             }
@@ -137,7 +142,9 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
      * @throws CompilerException
      */
     public void innerText() throws CompilerException{
-        moveOn();
+        if(!Tokens.validTags.contains(CompilerManager.currentToken)){
+            moveOn();
+        }
     }
 
     /**
@@ -145,7 +152,25 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
      * @throws CompilerException
      */
     public void variableDefine() throws CompilerException{
-
+        if(stripString(CompilerManager.currentToken).equals(Tokens.variableDefinitionBegin)){
+            moveOn();
+            if(!errorFound){innerText();}
+            if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.variableEquivalence)){
+                moveOn();
+            }
+            else{
+                errorFound = true;
+                throw new CompilerException("Got " + CompilerManager.currentToken + " but expected " + Tokens.variableEquivalence);
+            }
+            if(!errorFound){innerText();}
+            if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.variableEnd)){
+                moveOn();
+            }
+            else{
+                errorFound = true;
+                throw new CompilerException("Got " + CompilerManager.currentToken + " but expected " + Tokens.variableEnd);
+            }
+        }
     }
 
     /**
@@ -153,7 +178,17 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
      * @throws CompilerException
      */
     public void variableUse() throws CompilerException{
-
+        if(stripString(CompilerManager.currentToken).equals(Tokens.variableUseBegin)){
+            moveOn();
+            if(!errorFound){innerText();}
+            if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.variableEnd)){
+                moveOn();
+            }
+            else{
+                errorFound = true;
+                throw new CompilerException("Got " + CompilerManager.currentToken + " but expected " + Tokens.variableEnd);
+            }
+        }
     }
 
     /**
@@ -199,7 +234,12 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
     public void listitem() throws CompilerException{
         if(stripString(CompilerManager.currentToken).equals(Tokens.listItemBegin)){
             moveOn();
-            if(!errorFound){innerText();}
+            if(!errorFound){italics();}
+            if(!errorFound){bold();}
+            if(!errorFound){link();}
+            if(!errorFound){audio();}
+            if(!errorFound){video();}
+            if(!errorFound && !stripString(CompilerManager.currentToken).equals(Tokens.listItemEnd)){innerText();}
             if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.listItemEnd)){
                 moveOn();
             }
@@ -215,7 +255,16 @@ public class mySyntaxAnalyzer implements SyntaxAnalyzer {
      * @throws CompilerException
      */
     public void innerItem() throws CompilerException{
-
+        if(!errorFound){bold();}
+        if(!errorFound){italics();}
+        if(!errorFound){link();}
+        if(!errorFound){link();}
+        if(!errorFound){audio();}
+        if(!errorFound){video();}
+        if(!errorFound){listitem();}
+        if(!errorFound){newline();}
+        if(!errorFound){variableUse();}
+        if(!errorFound){innerText();}
     }
 
     /**
