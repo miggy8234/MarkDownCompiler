@@ -31,12 +31,12 @@ public class CompilerManager {
             System.out.println("Compilation Completed" + "\n");
             try {
                 semanticAnalyzer.writeToFile(fileLocation);
-                String fileName = "output.html";
+                String fileName = fileLocation.substring(fileLocation.lastIndexOf('/'), fileLocation.lastIndexOf('.')) + ".html";
                 String filePath = fileLocation.substring(0, fileLocation.lastIndexOf('/'));
                 outputLocation = filePath + fileName;
                 System.out.println("Output saved to: " + outputLocation + "\n");
                 System.out.println("Opening created file in browser..." + "\n");
-                //openHTMLFileInBrowswer(outputLocation);
+                openHTMLFileInBrowswer(outputLocation);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (UnsupportedEncodingException e) {

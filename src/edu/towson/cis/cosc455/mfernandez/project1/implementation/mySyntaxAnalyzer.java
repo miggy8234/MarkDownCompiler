@@ -42,6 +42,7 @@ public class  mySyntaxAnalyzer implements SyntaxAnalyzer {
     public void markdown() throws CompilerException{
         if(stripString(CompilerManager.currentToken).equals(docBegin)){
             moveOn();
+            String previousCurrent = null;
             while(!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.variableDefinitionBegin)){
                 variableDefine();
             }
@@ -103,11 +104,21 @@ public class  mySyntaxAnalyzer implements SyntaxAnalyzer {
      * @throws CompilerException
      */
     public void body() throws CompilerException{
+        String previousCurrent = null;
+        boolean rety = true;
         while(!errorFound
                 && CompilerManager.currentToken != null
-                && !stripString(CompilerManager.currentToken).equals(Tokens.docEnd)){
-            innerItem();
+                && !stripString(CompilerManager.currentToken).equals(Tokens.docEnd)
+                && (previousCurrent == null || !previousCurrent.equals(CompilerManager.currentToken) || rety)){
+            if(previousCurrent != null && previousCurrent.equals(CompilerManager.currentToken) && rety){
+                rety = false;
+            }
+            previousCurrent = CompilerManager.currentToken;
             if(!errorFound){paragraph();}
+            innerItem();
+        }
+        if(previousCurrent.equals(CompilerManager.currentToken)){
+            throw new CompilerException("The token of " + CompilerManager.currentToken + " is not a valid token here");
         }
     }
 

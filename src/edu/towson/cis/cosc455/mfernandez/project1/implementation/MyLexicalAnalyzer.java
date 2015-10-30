@@ -44,7 +44,6 @@ public class MyLexicalAnalyzer implements LexicalAnalyzer {
      */
     public void getNextToken() {
         if(tokenizer.hasMoreTokens() || lineHolding.length() > 0){
-            //CompilerManager.currentToken
             //System.out.println(lineHolding);
             CompilerManager.currentToken = "";
             nextCharStartsToken = false;
@@ -62,9 +61,12 @@ public class MyLexicalAnalyzer implements LexicalAnalyzer {
 
             lineHolding = lineHolding.substring(charIndex, lineHolding.length());
             //System.out.println(lineHolding);
-            CompilerManager.currentToken = CompilerManager.currentToken.trim();
+            if(lookupToken()){
+                CompilerManager.currentToken = CompilerManager.currentToken.trim();
+            }
             if(!lookupToken() && !validString() && !isSpace(CompilerManager.currentToken)){
                 try {
+                    CompilerManager.syntaxAnalyzer.errorFound = true;
                     throw new CompilerException("On line number " + CompilerManager.lineNumber + " : " + CompilerManager.currentToken + " is not a valid token");
                 } catch (CompilerException e) {
                     e.printStackTrace();

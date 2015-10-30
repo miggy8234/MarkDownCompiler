@@ -23,7 +23,7 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
         variables = new LinkedList<HashMap<String, String>>();
     }
 
-    public void convertStack(){
+    public void convertStack() throws CompilerException {
         HashMap<String, String> scopeVariables = null;
         while (!tokensToPrint.isEmpty()){
             String current = tokensToPrint.poll();
@@ -135,19 +135,20 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
                     else if(containsValueForVariable(variableNameToFind)){
                         output.add(getValueForVariable(variableNameToFind));
                     }
+                    else{
+                        throw new CompilerException("No variable named " + variableNameToFind + " is defined in this scope.");
+                    }
                     current = tokensToPrint.poll();
                     break;
                 default:
                     output.add(current);
                     break;
             }
-            if(newScope){
-                if(scopeVariables != null){
-                    if(variables.size() == 0){
-                        variables.addFirst(scopeVariables);
-                    }
-                    scopeVariables = null;
+            if(newScope || scopeVariables != null){
+                if(variables.size() == 0){
+                    variables.addFirst(scopeVariables);
                 }
+                scopeVariables = null;
             }
         }
     }
@@ -172,7 +173,7 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
 
     @Override
     public void writeToFile(String fileLocation) throws FileNotFoundException, UnsupportedEncodingException {
-        String fileName = "output.html";
+        String fileName = fileLocation.substring(fileLocation.lastIndexOf('/'), fileLocation.lastIndexOf('.')) + ".html";
         String filePath = fileLocation.substring(0, fileLocation.lastIndexOf('/'));
        // System.out.println("Output saved to: " + filePath + fileName);
         PrintWriter writer = new PrintWriter(filePath+fileName, "UTF-8");
