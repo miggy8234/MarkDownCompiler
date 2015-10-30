@@ -28,26 +28,27 @@ public class CompilerManager {
             semanticAnalyzer = new MySemanticAnalyzer(syntaxAnalyzer.passParseTree());
             semanticAnalyzer.convertStack();
 
-            System.out.println("Output:");
+            System.out.println("Compilation Completed" + "\n");
             try {
                 semanticAnalyzer.writeToFile(fileLocation);
                 String fileName = "output.html";
                 String filePath = fileLocation.substring(0, fileLocation.lastIndexOf('/'));
                 outputLocation = filePath + fileName;
+                System.out.println("Output saved to: " + outputLocation + "\n");
+                System.out.println("Opening created file in browser..." + "\n");
                 //openHTMLFileInBrowswer(outputLocation);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-            System.out.println("Done");
 
         }
         else if(!syntaxAnalyzer.errorFound && currentToken != null ){
             throw new CompilerException("Extra input after " + Tokens.docEnd + " tag.");
         }
         else{
-            System.out.println("Error Found");
+            System.out.println("Error Found" + "\n");
         }
     }
 

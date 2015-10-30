@@ -71,12 +71,9 @@ public class MyLexicalAnalyzer implements LexicalAnalyzer {
                 }
                 CompilerManager.currentToken = null;
             }
-            //getCharacter();
-            System.out.println("Current Token is: " + CompilerManager.currentToken);
+            //System.out.println("Current Token is: " + CompilerManager.currentToken);
         }
         else{
-            CompilerManager.currentToken = ">";
-            System.out.println("test " + lookupToken());
             CompilerManager.currentToken = null;
         }
     }
@@ -153,106 +150,11 @@ public class MyLexicalAnalyzer implements LexicalAnalyzer {
      * @return true, if it is a legal token, otherwise false
      */
     public boolean lookupToken(){
-
         return Tokens.validTags.contains(CompilerManager.currentToken.trim());
-
-        /*switch (CompilerManager.currentToken.trim()) {
-            case Tokens.docBegin:
-                return true;
-            case Tokens.docEnd:
-                return true;
-            case Tokens.headAnnotation:
-                return true;
-            case Tokens.titleBegin:
-                return true;
-            case Tokens.titleEnd:
-                return true;
-            case Tokens.paragraphBegin:
-                return true;
-            case Tokens.paragraphEnd:
-                return true;
-            case Tokens.boldAnnotation:
-                return true;
-            case Tokens.italicAnnotation:
-                return true;
-            case Tokens.listItemBegin:
-                return true;
-            case Tokens.listItemEnd:
-                return true;
-            case Tokens.lineBreakAnnotation:
-                return true;
-            case Tokens.urlAddressBegin:
-                return true;
-            case Tokens.urlAddressEnd:
-                return true;
-            case Tokens.linkPhraseBegin:
-                return true;
-            case Tokens.linkPhraseEnd:
-                return true;
-            case Tokens.audioAnnotation:
-                return true;
-            case Tokens.videoAnnotation:
-                return true;
-            case Tokens.variableDefinitionBegin:
-                return true;
-            case Tokens.variableUseBegin:
-                return true;
-            case Tokens.variableEnd:
-                return true;
-        }
-
-        return false;*/
     }
 
     public boolean lookupToken(String toTest){
         return Tokens.validTags.contains(toTest.trim());
-        /*
-        switch (toTest.trim()) {
-            case Tokens.docBegin:
-                return true;
-            case Tokens.docEnd:
-                return true;
-            case Tokens.headAnnotation:
-                return true;
-            case Tokens.titleBegin:
-                return true;
-            case Tokens.titleEnd:
-                return true;
-            case Tokens.paragraphBegin:
-                return true;
-            case Tokens.paragraphEnd:
-                return true;
-            case Tokens.boldAnnotation:
-                return true;
-            case Tokens.italicAnnotation:
-                return true;
-            case Tokens.listItemBegin:
-                return true;
-            case Tokens.listItemEnd:
-                return true;
-            case Tokens.lineBreakAnnotation:
-                return true;
-            case Tokens.urlAddressBegin:
-                return true;
-            case Tokens.urlAddressEnd:
-                return true;
-            case Tokens.linkPhraseBegin:
-                return true;
-            case Tokens.linkPhraseEnd:
-                return true;
-            case Tokens.audioAnnotation:
-                return true;
-            case Tokens.videoAnnotation:
-                return true;
-            case Tokens.variableDefinitionBegin:
-                return true;
-            case Tokens.variableUseBegin:
-                return true;
-            case Tokens.variableEnd:
-                return true;
-        }
-
-        return false;*/
     }
 
 }

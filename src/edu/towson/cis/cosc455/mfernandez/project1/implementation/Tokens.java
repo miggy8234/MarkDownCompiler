@@ -110,6 +110,7 @@ public class Tokens {
         add("_");
         add("!");
         add("/");
+        add(" ");
         add("\t");
         add("\r");
         add("\n");

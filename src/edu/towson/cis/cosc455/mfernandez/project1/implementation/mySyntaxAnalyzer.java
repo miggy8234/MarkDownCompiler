@@ -42,13 +42,11 @@ public class  mySyntaxAnalyzer implements SyntaxAnalyzer {
     public void markdown() throws CompilerException{
         if(stripString(CompilerManager.currentToken).equals(docBegin)){
             moveOn();
-            while(!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.variableDefinitionBegin)){variableDefine();}
+            while(!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.variableDefinitionBegin)){
+                variableDefine();
+            }
             if(!errorFound){head();}
             if(!errorFound){body();}
-            /*while(!errorFound && !Tokens.validTags.contains(stripString(CompilerManager.currentToken))){
-                innerText();
-                if(!errorFound){paragraph();}
-            }*/
             if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.docEnd)){
                 moveOn();
             }
@@ -120,13 +118,14 @@ public class  mySyntaxAnalyzer implements SyntaxAnalyzer {
     public void paragraph() throws CompilerException{
         if(stripString(CompilerManager.currentToken).equals(Tokens.paragraphBegin)){
             moveOn();
-            if(!errorFound){variableDefine();}
+            while(!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.variableDefinitionBegin)){
+                variableDefine();
+            }
             while(!errorFound
                     && CompilerManager.currentToken != null
                     && !stripString(CompilerManager.currentToken).equals(Tokens.paragraphEnd)){
                 innerItem();
             }
-            //if(!errorFound && !stripString(CompilerManager.currentToken).equals(Tokens.paragraphEnd)){innerText();}
             if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.paragraphEnd)){
                 moveOn();
             }
@@ -198,7 +197,10 @@ public class  mySyntaxAnalyzer implements SyntaxAnalyzer {
     public void bold() throws CompilerException{
         if(stripString(CompilerManager.currentToken).equals(Tokens.boldAnnotation)){
             moveOn();
-            if(!errorFound){innerText();}
+            while(!errorFound && !stripString(CompilerManager.currentToken).equals(Tokens.boldAnnotation)){
+                variableDefine();
+                innerText();
+            }
             if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.boldAnnotation)){
                 moveOn();
             }
@@ -216,7 +218,10 @@ public class  mySyntaxAnalyzer implements SyntaxAnalyzer {
     public void italics() throws CompilerException{
         if(stripString(CompilerManager.currentToken).equals(Tokens.italicAnnotation)){
             moveOn();
-            if(!errorFound){innerText();}
+            while(!errorFound && !stripString(CompilerManager.currentToken).equals(Tokens.italicAnnotation)){
+                variableDefine();
+                innerText();
+            }
             if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.italicAnnotation)){
                 moveOn();
             }
@@ -234,12 +239,15 @@ public class  mySyntaxAnalyzer implements SyntaxAnalyzer {
     public void listitem() throws CompilerException{
         if(stripString(CompilerManager.currentToken).equals(Tokens.listItemBegin)){
             moveOn();
-            if(!errorFound){italics();}
-            if(!errorFound){bold();}
-            if(!errorFound){link();}
-            if(!errorFound){audio();}
-            if(!errorFound){video();}
-            if(!errorFound && !stripString(CompilerManager.currentToken).equals(Tokens.listItemEnd)){innerText();}
+            while(!errorFound && !stripString(CompilerManager.currentToken).equals(Tokens.listItemEnd)){
+                italics();
+                video();
+                audio();
+                link();
+                bold();
+                variableUse();
+                innerText();
+            }
             if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.listItemEnd)){
                 moveOn();
             }
@@ -274,7 +282,10 @@ public class  mySyntaxAnalyzer implements SyntaxAnalyzer {
     public void link() throws CompilerException{
         if(stripString(CompilerManager.currentToken).equals(Tokens.linkPhraseBegin)){
             moveOn();
-            if(!errorFound){innerText();}
+            while(!errorFound && !stripString(CompilerManager.currentToken).equals(Tokens.linkPhraseEnd)){
+                variableUse();
+                innerText();
+            }
             if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.linkPhraseEnd)){
                 moveOn();
                 if(!errorFound){url();}
@@ -289,7 +300,10 @@ public class  mySyntaxAnalyzer implements SyntaxAnalyzer {
     public void url() throws CompilerException{
         if(stripString(CompilerManager.currentToken).equals(Tokens.urlAddressBegin)){
             moveOn();
-            if(!errorFound){innerText();}
+            while(!errorFound && !stripString(CompilerManager.currentToken).equals(Tokens.urlAddressEnd)){
+                variableUse();
+                innerText();
+            }
             if (!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.urlAddressEnd)){
                 moveOn();
             }

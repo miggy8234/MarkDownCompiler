@@ -172,17 +172,15 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
 
     @Override
     public void writeToFile(String fileLocation) throws FileNotFoundException, UnsupportedEncodingException {
-        boolean test = containsValueForVariable("lastname");
-        String test2 = getValueForVariable("lastname");
         String fileName = "output.html";
         String filePath = fileLocation.substring(0, fileLocation.lastIndexOf('/'));
-        System.out.println("Output saved to: " + filePath + fileName);
+       // System.out.println("Output saved to: " + filePath + fileName);
         PrintWriter writer = new PrintWriter(filePath+fileName, "UTF-8");
         for(String s: output){
             writer.print(s);
-            System.out.print(s);
+            //System.out.print(s);
         }
-        System.out.println("\n");
+        //System.out.println("\n");
         writer.close();
     }
 }

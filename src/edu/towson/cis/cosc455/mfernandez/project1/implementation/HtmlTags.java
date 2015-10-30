@@ -37,6 +37,6 @@ public class HtmlTags {
     public static final String audioEnd = "</audio>";
 
     public static final String videoStart = "<iframe src='";
-    public static final String videoMiddle = "'/>";
+    public static final String videoMiddle = "'></iframe>";
 
 }
