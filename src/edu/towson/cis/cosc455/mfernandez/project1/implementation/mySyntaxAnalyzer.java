@@ -42,7 +42,7 @@ public class  mySyntaxAnalyzer implements SyntaxAnalyzer {
     public void markdown() throws CompilerException{
         if(stripString(CompilerManager.currentToken).equals(docBegin)){
             moveOn();
-            if(!errorFound){variableDefine();}
+            while(!errorFound && stripString(CompilerManager.currentToken).equals(Tokens.variableDefinitionBegin)){variableDefine();}
             if(!errorFound){head();}
             if(!errorFound){body();}
             /*while(!errorFound && !Tokens.validTags.contains(stripString(CompilerManager.currentToken))){

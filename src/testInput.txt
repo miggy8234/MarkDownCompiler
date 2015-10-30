@@ -1,5 +1,6 @@
 #BEGIN
 $DEF lastname = Simpson $END
+$DEF lastname3 = Simpson3 $END
 ^<title>^
 $USE lastname $END
 **hello**
@@ -12,6 +13,7 @@ $DEF lastname = Simpson2 $END
 %(http://www.youtube.com/embed/zoO0s1ukcqQ)
 +[iteml1](google.com);
 $USE lastname $END
+$USE lastname3 $END
 }
 {paragraph $USE lastname $END}
 sdfsdf
