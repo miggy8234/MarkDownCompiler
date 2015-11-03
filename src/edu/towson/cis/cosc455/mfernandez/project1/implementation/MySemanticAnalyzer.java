@@ -115,20 +115,25 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
                     output.add(HtmlTags.paragraphEnd + "\n");
                     break;
                 case Tokens.variableDefinitionBegin:
-                    String variableName = tokensToPrint.poll();
-                    current = tokensToPrint.poll();
-                    String variableValue = tokensToPrint.poll();
-                    if(scopeVariables == null){
-                        scopeVariables = new HashMap<String, String>(){{put("ScopeLocaiton", variableValue);put(variableName, variableValue);}};
-                        //variables.addLast(new HashMap<String, String>(){{put(variableName, variableValue);}});
-                    }
-                    else{
-                        scopeVariables.put(variableName, variableValue);
-                    }
-                    current = tokensToPrint.poll();
+                    do{
+                        if(tokensToPrint.peek().equals(Tokens.variableDefinitionBegin)){
+                            current = tokensToPrint.poll();
+                        }
+                        String variableName = tokensToPrint.poll().trim();
+                        current = tokensToPrint.poll();
+                        String variableValue = tokensToPrint.poll().trim();
+                        if(scopeVariables == null){
+                            scopeVariables = new HashMap<String, String>(){{put(variableName, variableValue);}};
+                            //variables.addLast(new HashMap<String, String>(){{put(variableName, variableValue);}});
+                        }
+                        else{
+                            scopeVariables.put(variableName, variableValue);
+                        }
+                        current = tokensToPrint.poll();
+                    }while(!tokensToPrint.isEmpty() && tokensToPrint.peek().equals(Tokens.variableDefinitionBegin));
                     break;
                 case Tokens.variableUseBegin:
-                    String variableNameToFind = tokensToPrint.poll();
+                    String variableNameToFind = tokensToPrint.poll().trim();
                     if(scopeVariables != null && scopeVariables.containsKey(variableNameToFind)){
                         output.add(scopeVariables.get(variableNameToFind));
                     }
@@ -136,7 +141,7 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
                         output.add(getValueForVariable(variableNameToFind));
                     }
                     else{
-                        throw new CompilerException("No variable named " + variableNameToFind + " is defined in this scope.");
+                        throw new CompilerException("No variable named '" + variableNameToFind.trim() + "' is defined in this scope.");
                     }
                     current = tokensToPrint.poll();
                     break;
@@ -164,7 +169,7 @@ public class MySemanticAnalyzer implements SemanticAnalyzer {
 
     private boolean containsValueForVariable(String variableName){
         for(HashMap<String, String> map : variables){
-            if(map.containsKey(variableName)){
+            if(map != null && map.containsKey(variableName.trim())){
                 return true;
             }
         }
